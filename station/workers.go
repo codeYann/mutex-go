@@ -1,3 +1,6 @@
+// Nome: Yan Rodrigues da Silva
+// Matrícula: 495532
+
 package station
 
 type Worker struct {

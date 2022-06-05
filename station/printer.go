@@ -1,3 +1,6 @@
+// Nome: Yan Rodrigues da Silva
+// Matrícula: 495532package station
+
 package station
 
 import (
