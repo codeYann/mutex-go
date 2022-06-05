@@ -10,6 +10,7 @@ import (
 
 var mutex sync.Mutex
 
+// Função para executar na primeira thread
 func printerService1() {
 	john := s.CreateWorker("John Doe", "Backend developer", 190)
 	johnPrinter := s.CreatePrinter()
@@ -21,12 +22,13 @@ func printerService1() {
 	})
 	mutex.Lock()
 	time.Sleep(250 * time.Millisecond)
-	johnPrinter.CreateFile("output/printer.txt")
-	johnPrinter.WriteContent("output/printer.txt")
-	johnPrinter.ExportHashText("output/", "T1")
+	johnPrinter.CreateFile("./printer.txt")
+	johnPrinter.WriteContent("./printer.txt")
+	johnPrinter.ExportHashText("./printer.txt", "output/", "T1")
 	mutex.Unlock()
 }
 
+// Função para executar na segunda thread
 func printerService2() {
 	foo := s.CreateWorker("Foo Bar", "Social Midia Manager", 182)
 	fooPrinter := s.CreatePrinter()
@@ -38,15 +40,15 @@ func printerService2() {
 	})
 	mutex.Lock()
 	time.Sleep(250 * time.Millisecond)
-	fooPrinter.CreateFile("output/printer.txt")
-	fooPrinter.WriteContent("output/printer.txt")
-	fooPrinter.ExportHashText("output/", "T2")
+	fooPrinter.CreateFile("./printer.txt")
+	fooPrinter.WriteContent("./printer.txt")
+	fooPrinter.ExportHashText("./printer.txt", "output/", "T2")
 	mutex.Unlock()
 }
 
 func main() {
-	go printerService1()
-	go printerService2()
+	go printerService1() // Executando a primeira thread
+	go printerService2() // Executando a segunda thread
 	time.Sleep(700 * time.Millisecond)
 	fmt.Println("Finishing!")
 }
