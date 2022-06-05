@@ -10,38 +10,56 @@ import (
 )
 
 type Printer struct {
-	worker        *Worker
-	processesList []string
+	worker   *Worker
+	todoList []string
 }
 
-// func createFile(path string) {
-// 	file, err := os.Create(path)
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	file.Close()
-// }
+func CreatePrinter() *Printer {
+	return &Printer{
+		worker:   nil,
+		todoList: nil,
+	}
+}
 
-func writeContent(w *Worker, processes []string, path string) {
-	file, err := os.Open(path)
+func (printer *Printer) GetTasks(worker *Worker, todoList []string) {
+	printer.worker = worker
+	printer.todoList = todoList
+}
+
+func (printer Printer) CreateFile(path string) {
+	file, err := os.Create(path)
+	if err != nil {
+		log.Fatal(err)
+	}
+	file.Close()
+}
+
+func (printer *Printer) WriteContent(path string) {
+	file, err := os.OpenFile(
+		path,
+		os.O_APPEND|os.O_WRONLY,
+		0644,
+	)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Fprintln(file, "Worker: "+w.name)
-	fmt.Fprintln(file, "Id: "+strconv.Itoa(w.id))
+	fmt.Fprintln(file, "Worker: "+printer.worker.name)
+	fmt.Fprintln(file, "Id: "+strconv.Itoa(printer.worker.id))
 	fmt.Fprintln(file, "Todo list: ")
 
-	for _, process := range processes {
-		fmt.Fprintln(file, process)
+	for _, todo := range printer.todoList {
+		fmt.Fprintln(file, todo)
 	}
+	file.Close()
 }
 
-func (p *Printer) exportHashText(seed string) {
+func (p *Printer) ExportHashText(path, hashCode string) {
 	header := sha1.New()
-	header.Write([]byte(seed))
+	header.Write([]byte(hashCode))
 	hash := hex.EncodeToString(header.Sum(nil))
-	file, err := os.Create("./output/" + hash)
+	file, err := os.Create(path + hash + ".txt")
+
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -50,31 +68,7 @@ func (p *Printer) exportHashText(seed string) {
 	fmt.Fprintln(file, "Id: "+strconv.Itoa(p.worker.id))
 	fmt.Fprintln(file, "Todo list: ")
 
-	for _, process := range p.processesList {
-		fmt.Fprintln(file, process)
+	for _, todo := range p.todoList {
+		fmt.Fprintln(file, todo)
 	}
-}
-
-// func deleteFile(path string) {
-// 	err := os.Remove(path)
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// }
-
-func CreatePrinter(worker *Worker, processesList []string) *Printer {
-	return &Printer{
-		worker,
-		processesList,
-	}
-}
-
-func (p *Printer) Impress(path string, seed string) {
-	if p == nil {
-		return
-	}
-	// createFile(path)
-	writeContent(p.worker, p.processesList, path)
-	p.exportHashText(seed)
-	// deleteFile(path)
 }
