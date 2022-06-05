@@ -10,37 +10,43 @@ import (
 
 var mutex sync.Mutex
 
-func printerDaemon1(worker *s.Worker, list []string, path string) {
-	fmt.Println("Printing data from thread 1")
+func printerService1() {
+	john := s.CreateWorker("John Doe", "Backend developer", 190)
+	johnPrinter := s.CreatePrinter()
+	johnPrinter.GetTasks(john, []string{
+		"Fixing database issues",
+		"Create new api route",
+		"Create new docker container",
+		"Fixing cors problem\n",
+	})
 	mutex.Lock()
-	ptPrinter := s.CreatePrinter(worker, list)
 	time.Sleep(250 * time.Millisecond)
-	ptPrinter.Impress(path, "thread1")
+	johnPrinter.CreateFile("output/printer.txt")
+	johnPrinter.WriteContent("output/printer.txt")
+	johnPrinter.ExportHashText("output/", "T1")
 	mutex.Unlock()
 }
 
-func printerDaemon2(worker *s.Worker, list []string, path string) {
-	fmt.Println("Printing data from thread 2")
+func printerService2() {
+	foo := s.CreateWorker("Foo Bar", "Social Midia Manager", 182)
+	fooPrinter := s.CreatePrinter()
+	fooPrinter.GetTasks(foo, []string{
+		"New instagram post",
+		"New TikTok post",
+		"Create reddit community",
+		"Create discord server\n",
+	})
 	mutex.Lock()
-	ptPrinter := s.CreatePrinter(worker, list)
 	time.Sleep(250 * time.Millisecond)
-	ptPrinter.Impress(path, "thread2")
+	fooPrinter.CreateFile("output/printer.txt")
+	fooPrinter.WriteContent("output/printer.txt")
+	fooPrinter.ExportHashText("output/", "T2")
 	mutex.Unlock()
 }
 
 func main() {
-	go printerDaemon1(
-		s.CreateWorker("John Doe", "Backend developer", 120),
-		[]string{"Create database", "Fixing rest api", "Deploy new application\n"},
-		"./output/printer.txt",
-	)
-
-	go printerDaemon2(
-		s.CreateWorker("Foo bar", "Community manager", 88),
-		[]string{"Create new reddit post", "Update trello tasks", "Create new discord server\n"},
-		"./output/printer.txt",
-	)
-
-	time.Sleep(800 * time.Millisecond)
-	fmt.Printf("Finishing")
+	go printerService1()
+	go printerService2()
+	time.Sleep(700 * time.Millisecond)
+	fmt.Println("Finishing!")
 }
