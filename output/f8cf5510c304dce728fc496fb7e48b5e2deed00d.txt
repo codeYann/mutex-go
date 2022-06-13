@@ -1,8 +1,0 @@
-Worker: Foo Bar
-Id: 182
-Todo list: 
-New instagram post
-New TikTok post
-Create reddit community
-Create discord server
-

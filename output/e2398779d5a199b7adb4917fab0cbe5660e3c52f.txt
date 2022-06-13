@@ -1,8 +1,0 @@
-Worker: John Doe
-Id: 190
-Todo list: 
-Fixing database issues
-Create new api route
-Create new docker container
-Fixing cors problem
-
